@@ -2,12 +2,16 @@ package com.example.hospitalmanagement.controllers;
 
 import com.example.hospitalmanagement.models.dto.request.DoctorDTO;
 import com.example.hospitalmanagement.models.dto.request.MeetingsDTO;
+import com.example.hospitalmanagement.models.dto.response.ApiResponse;
 import com.example.hospitalmanagement.models.entity.Doctors;
 import com.example.hospitalmanagement.models.entity.Meetings;
 import com.example.hospitalmanagement.service.DoctorsService;
 import com.example.hospitalmanagement.service.MeetingsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +24,20 @@ public class DoctorsController {
     private final MeetingsService meetingsService;
 
     @GetMapping
-    public List<Doctors> getAllDoctors() {
-        return doctorsService.getAllDoctors();
+    public ResponseEntity<ApiResponse<List<Doctors>>> getAllDoctors() {
+
+        List<Doctors> doctorsList = doctorsService.getAllDoctors();
+
+        ApiResponse.Meta meta = new ApiResponse.Meta(doctorsList.size(), 1);
+
+        ApiResponse<List<Doctors>> apiResponse = new ApiResponse<>(
+                true,
+                200,
+                doctorsList,
+                meta
+        );
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -51,9 +67,20 @@ public class DoctorsController {
     }
 
     @GetMapping("/{doctorId}/meetings")
-    public List<Meetings> getMeetingsByDoctorId(
+    public ResponseEntity<ApiResponse<List<Meetings>>> getMeetingsByDoctorId(
             @PathVariable("doctorId") Integer doctorId) {
-        return meetingsService.getMeetingsByDoctorId(doctorId);
+        List<Meetings> meetingsByDoctorId = meetingsService.getMeetingsByDoctorId(doctorId);
+
+        ApiResponse.Meta meta = new ApiResponse.Meta(meetingsByDoctorId.size(), 1);
+
+        ApiResponse<List<Meetings>> apiResponse = new ApiResponse<>(
+                true,
+                200,
+                meetingsByDoctorId,
+                meta
+        );
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @PostMapping("/{doctorId}/meetings")
