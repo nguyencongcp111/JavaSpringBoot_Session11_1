@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +17,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException exception
+            MethodArgumentNotValidException exception,
+            WebRequest request
     ) {
         Map<String, String> errors = new HashMap<>();
 
@@ -24,46 +27,73 @@ public class GlobalExceptionHandler {
                     errors.put(fieldError.getField(), fieldError.getDefaultMessage());
                 });
 
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        String path = request.getDescription(false).replace("uri=", "");
+
         ErrorResponse response = new ErrorResponse<>();
-        response.setMessage("Dữ liệu đầu vào không hợp lệ hoặc bị bỏ trống");
-        response.setData(errors);
-        response.setStatus(HttpStatus.BAD_REQUEST);
+        response.setTimestamp(LocalDateTime.now());
+        response.setCode(status.value());
+        response.setError(status.name());
+        response.setMessage(errors);
+        response.setPath(path);
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
-            ResourceNotFoundException exception
+            ResourceNotFoundException exception,
+            WebRequest request
     ) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        String path = request.getDescription(false).replace("uri=", "");
+
         ErrorResponse response = new ErrorResponse<>();
-        response.setMessage("Không tìm thấy dữ liệu");
-        response.setData(exception.getMessage());
-        response.setStatus(HttpStatus.NOT_FOUND);
+        response.setTimestamp(LocalDateTime.now());
+        response.setCode(status.value());
+        response.setError(status.name());
+        response.setMessage(exception.getMessage());
+        response.setPath(path);
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(InvalidInputException.class)
     public ResponseEntity<ErrorResponse> handleInvalidInputException(
-            InvalidInputException exception
+            InvalidInputException exception,
+            WebRequest request
     ) {
+        HttpStatus status = HttpStatus.UNPROCESSABLE_CONTENT;
+
+        String path = request.getDescription(false).replace("uri=", "");
+
         ErrorResponse response = new ErrorResponse<>();
-        response.setMessage("Dữ liệu đầu vào không hợp lệ");
-        response.setData(exception.getMessage());
-        response.setStatus(HttpStatus.UNPROCESSABLE_CONTENT);
+        response.setTimestamp(LocalDateTime.now());
+        response.setCode(status.value());
+        response.setError(status.name());
+        response.setMessage(exception.getMessage());
+        response.setPath(path);
 
         return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_CONTENT);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleError(
-            Exception exception
+            Exception exception,
+            WebRequest request
     ) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        String path = request.getDescription(false).replace("uri=", "");
+
         ErrorResponse response = new ErrorResponse<>();
-        response.setMessage("Hệ thống xảy ra sự cố, vui lòng thử lại sau");
-        response.setData(exception.getMessage());
-        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        response.setTimestamp(LocalDateTime.now());
+        response.setCode(status.value());
+        response.setError(status.name());
+        response.setMessage(exception.getMessage());
+        response.setPath(path);
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

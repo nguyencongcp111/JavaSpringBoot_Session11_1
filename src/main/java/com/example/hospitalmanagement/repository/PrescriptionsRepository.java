@@ -6,9 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PrescriptionsRepository extends JpaRepository<Prescriptions, Integer> {
-    Prescriptions getPrescriptionByIdAndPatientId(
+    Optional<Prescriptions> getPrescriptionByIdAndPatientId(
             Integer patientId, Integer prescriptionId);
 }

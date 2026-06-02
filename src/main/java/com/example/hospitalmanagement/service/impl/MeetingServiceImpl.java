@@ -23,6 +23,12 @@ public class MeetingServiceImpl implements MeetingsService {
 
     @Override
     public List<Meetings> getMeetingsByDoctorId(Integer doctorId) {
+        Doctors doctor = doctorsRepository.findById(doctorId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Không tìm thấy bác sĩ có ID "
+                                + doctorId
+                ));
+
         return meetingsRepository.getMeetingsByDoctorId(doctorId);
     }
 

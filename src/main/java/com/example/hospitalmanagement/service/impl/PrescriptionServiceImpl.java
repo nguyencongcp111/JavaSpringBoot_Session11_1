@@ -26,8 +26,20 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     @Override
     public Prescriptions getPrescriptionByIdAndPatientId
             (Integer patientId, Integer prescriptionId) {
+
+        Patients patient = patientsRepository.findById(patientId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Không tìm thấy bệnh nhân có ID"
+                                + patientId
+                ));
+
         return prescriptionsRepository.getPrescriptionByIdAndPatientId
-                (patientId, prescriptionId);
+                (patientId, prescriptionId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Không tìm thấy đơn thuốc "
+                                + prescriptionId
+                                + " của bệnh nhân này"
+                ));
     }
 
     @Override
