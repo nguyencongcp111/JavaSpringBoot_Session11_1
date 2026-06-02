@@ -1,8 +1,11 @@
 package com.example.hospitalmanagement.controllers;
 
 import com.example.hospitalmanagement.models.dto.request.DoctorDTO;
+import com.example.hospitalmanagement.models.dto.request.MeetingsDTO;
 import com.example.hospitalmanagement.models.entity.Doctors;
+import com.example.hospitalmanagement.models.entity.Meetings;
 import com.example.hospitalmanagement.service.DoctorsService;
+import com.example.hospitalmanagement.service.MeetingsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DoctorsController {
     private final DoctorsService doctorsService;
+    private final MeetingsService meetingsService;
 
     @GetMapping
     public List<Doctors> getAllDoctors() {
@@ -44,5 +48,18 @@ public class DoctorsController {
     public void deleteDoctor(@PathVariable("id") Integer id) {
         doctorsService.deleteDoctor(id);
         System.out.println("Đã xóa thành công");
+    }
+
+    @GetMapping("/{doctorId}/meetings")
+    public List<Meetings> getMeetingsByDoctorId(
+            @PathVariable("doctorId") Integer doctorId) {
+        return meetingsService.getMeetingsByDoctorId(doctorId);
+    }
+
+    @PostMapping("/{doctorId}/meetings")
+    public Meetings addMeeting(
+            @PathVariable("doctorId") Integer doctorId,
+            @Valid @RequestBody MeetingsDTO meetingsDTO) {
+        return meetingsService.addMeeting(meetingsDTO);
     }
 }

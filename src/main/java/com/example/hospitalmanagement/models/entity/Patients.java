@@ -1,5 +1,6 @@
 package com.example.hospitalmanagement.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,35 +12,32 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "doctors")
+@Table(name = "patients")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class Doctors {
+public class Patients {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "doctor_id")
+    @Column(name = "patient_id")
     private Integer id;
     @Column(name = "full_name")
     private String fullName;
-    @Column(name = "email")
-    private String email;
     @Column(name = "phone_number")
     private String phoneNumber;
-    @Column(name = "gender")
-    private Gender gender;
     @Column(name = "dob")
     private LocalDate dob;
-    @Column(name = "specialization")
-    private String specialization;
+    @Column(name = "gender")
+    private Gender gender;
+    @Column(name = "address")
+    private String address;
 
-    @OneToMany(mappedBy = "doctor")
+    @OneToMany(mappedBy = "patient")
     @JsonIgnore
     private List<Meetings> meetings;
 
-    @OneToMany(mappedBy = "doctor")
+    @OneToMany(mappedBy = "patient")
     @JsonIgnore
     private List<Prescriptions> prescriptions;
-
 }

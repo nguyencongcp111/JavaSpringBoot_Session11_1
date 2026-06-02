@@ -3,7 +3,6 @@ package com.example.hospitalmanagement.service;
 import com.example.hospitalmanagement.models.dto.request.DoctorDTO;
 import com.example.hospitalmanagement.models.entity.Doctors;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface DoctorsService {
